@@ -8,13 +8,13 @@ class TypingEvent {
   }
 }
 
-export class TenFingers {
+export default class TenFingers {
   constructor(target, args) {
     this.target = target;
     args = args || {};
 
     // -- SPECIFY FURTHER ARGS -- //
-    this.typingSpeed = args.typingSpeed || 250;
+    this.typingSpeed = args.typingSpeed || 125;
     this.deletingSpeed = args.deletingSpeed || this.typingSpeed-50;
     this.cursorSpeed = args.cursorSpeed || .5;
     this.pauseTimeout = args.pauseTimeout || args.pauseTimeoutS*1000 || 2000;
