@@ -124,11 +124,28 @@ export default class TenFingers {
   }
 
   typeWCallback(text, callback) {
+    var i = 0,
+        p = /&\w+;/gm,
+        t_parts = [],
+        m;
+
+    while (m = p.exec(text)) {
+      for (; i < m.index; i++) {
+        t_parts.push(text[i]);
+      }
+
+      t_parts.push(text.substr(m.index, p.lastIndex-m.index))
+      i = p.lastIndex;
+    }
+
+    for (; i < text.length; i++)
+      t_parts.push(text[i]);
+
     var ind = 0,
       tInterval = window.setInterval(() => {
-        this.content.innerHTML = this.content.innerHTML + text[ind++];
+        this.content.innerHTML = this.content.innerHTML + t_parts[ind++];
 
-        if (ind >= text.length) {
+        if (ind >= t_parts.length) {
           window.clearInterval(tInterval);
           callback();
         }

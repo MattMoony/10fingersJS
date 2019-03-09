@@ -1,4 +1,5 @@
-import { TenFingers } from './tenfingers/tenfingers.js';
+// import TenFingers from 'https://cdn.jsdelivr.net/gh/MattMoony/10fingersJS/tenfingers/tenfingers.js';
+import TenFingers from './tenfingers/tenfingers.js';
 
 let target = document.getElementById('target'),
     typer = new TenFingers(target);
@@ -16,6 +17,7 @@ let target = document.getElementById('target'),
 //       .type('.');
 
 typer.typeAll([
+  '!&copy; MattMoony',
   'Hello World!',
   'Hello Whales!',
   'Hello Wales!',
