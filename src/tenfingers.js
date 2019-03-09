@@ -123,6 +123,10 @@ export default class TenFingers {
     return this.addEvent(text, this.typeWCallback.bind(this));
   }
 
+  typeById(id) {
+    return this.addEvent(document.getElementById(id).innerHTML, this.typeWCallback.bind(this));
+  }
+
   typeWCallback(text, callback) {
     var i = 0,
         p = /&\w+;/gm,
@@ -159,6 +163,9 @@ export default class TenFingers {
     let l_string = strings[0];
 
     strings.slice(1).forEach(s => {
+      if (s.startsWith('#'))
+        s = document.getElementById(s.substr(1)).innerHTML;
+
       let rm_chars = this.getCharsToDelete(l_string, s);
 
       this  .delete(rm_chars)
