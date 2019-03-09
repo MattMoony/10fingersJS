@@ -2,24 +2,48 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>10fingers.JS</title>
+    <title>10fingersJS</title>
 
     <style>
       h1 {
         font-family: sans-serif;
         font-size: 2em;
         text-align: center;
+        margin: 15px 0 0;
+      }
+      h3 {
+        margin: 5px 0 15px;
+        letter-spacing: 2.5px;
+        font-style: italic;
+        font-weight: lighter;
+        text-align: center;
+        border-bottom: 1.5px solid #cecece;
+        padding-bottom: 15px;
+      }
+      article {
+        padding: 25px;
       }
       #target {
         font-size: 1.25em;
         font-family: monospace;
       }
+      #target::before {
+        content: '>>';
+        font-style: italic;
+        font-weight: bold;
+        margin-right: 5px;
+      }
     </style>
   </head>
   <body>
-    <h1>Tenfingers.JS</h1>
+    <header>
+      <h1>10fingersJS</h1>
+      <h3>by MattMoony</h3>
+    </header>
+    <article>
+      <p id="target"></p>
+    </article>
 
-    <p id="target"></p>
     <script type="module" src="./index.js"></script>
   </body>
 </html>

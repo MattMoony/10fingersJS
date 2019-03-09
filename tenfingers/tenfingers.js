@@ -1,7 +1,10 @@
 class TypingEvent {
-  constructor(data, func) {
+  constructor(data, func, args) {
     this.data = data;
     this.func = func;
+
+    args = args || {};
+    this.once = args.once || false;
   }
 }
 
@@ -10,14 +13,19 @@ export class TenFingers {
     this.target = target;
     args = args || {};
 
-    this.eventLoop = [];
-    this.handling = false;
-
     // -- SPECIFY FURTHER ARGS -- //
     this.typingSpeed = args.typingSpeed || 250;
-    this.deletingSpeed = args.deletingSpeed || this.typingSpeed;
+    this.deletingSpeed = args.deletingSpeed || this.typingSpeed-50;
     this.cursorSpeed = args.cursorSpeed || .5;
     this.pauseTimeout = args.pauseTimeout || args.pauseTimeoutS*1000 || 2000;
+    this.endTimeout = args.endTimeout || 4000;
+    this.endStringTimeout = args.endStringTimeout || 1250;
+
+    this.loop = args.loop || true;
+    this.eventQueueIndex = 0;
+
+    this.eventQueue = [new TypingEvent(this.endTimeout, this.pauseWCallback)];
+    this.handling = false;
 
     this.setup();
   }
@@ -48,7 +56,8 @@ export class TenFingers {
       .tenfingersjs-tags-content {
         vertical-algin: center;
         font-size: inherit;
-        height: 100%;
+        padding: 0;
+        margin: 0;
       }
     `;
 
@@ -62,7 +71,7 @@ export class TenFingers {
     cursor.classList.add('tenfingersjs-tags-cursor');
     this.cursor = cursor;
 
-    let content = document.createElement('span');
+    let content = document.createElement('pre');
     content.classList.add('tenfingersjs-tags-content');
     this.content = content;
 
@@ -70,23 +79,44 @@ export class TenFingers {
     this.target.appendChild(this.cursor);
   }
 
+  getNextEvent() {
+    this.eventQueueIndex = this.eventQueueIndex%this.eventQueue.length;
+
+    if (this.loop) {
+      let nextE = this.eventQueue[this.eventQueueIndex++];
+
+      if (nextE.once)
+        this.eventQueue.splice(--this.eventQueueIndex, 1);
+
+      return nextE;
+    }
+
+    return this.eventQueue.splice(0,1)[0];
+  }
+
   handleNextEvent() {
-    if (this.eventLoop.length === 0) {
+    if (this.eventQueue.length === 0) {
       this.handling = false;
       return;
     }
 
     this.handling = true;
-    let nEvent = this.eventLoop.splice(0,1)[0];
+    let nEvent = this.getNextEvent();
     nEvent.func(nEvent.data, this.handleNextEvent.bind(this));
   }
 
-  addEvent(data, func) {
-    this.eventLoop.push(new TypingEvent(data, func));
+  addEvent(data, func, args) {
+    this.eventQueue.push(this.eventQueue[this.eventQueue.length-1]);
+    this.eventQueue[this.eventQueue.length-2] = new TypingEvent(data, func, args);
 
     if (!this.handling)
       this.handleNextEvent();
     return this;
+  }
+
+  getCharsToDelete(before, after) {
+    for (var i = 0; before[i] === after[i] && i <= after.length && i <= before.length; i++) {}
+    return before.length-i;
   }
 
   type(text) {
@@ -105,6 +135,32 @@ export class TenFingers {
       }, this.typingSpeed);
   }
 
+  typeAll(strings) {
+    this.addEvent(strings[0], this.typeWCallback.bind(this), {once: true});
+    this.addEvent(this.endStringTimeout, this.pauseWCallback.bind(this), {once: true});
+
+    let l_string = strings[0];
+
+    strings.slice(1).forEach(s => {
+      let rm_chars = this.getCharsToDelete(l_string, s);
+
+      this  .delete(rm_chars)
+            .type(s.substr(l_string.length-rm_chars))
+            .pause(this.endStringTimeout);
+
+      l_string = s;
+    });
+    this.pause(this.endTimeout);
+
+    let rm_chars = this.getCharsToDelete(l_string, strings[0]);
+
+    this.delete(rm_chars)
+        .type(strings[0].substr(l_string.length-rm_chars))
+        .pause(this.endStringTimeout);
+
+    this.eventQueue.pop();
+  }
+
   delete(chars) {
     return this.addEvent(chars, this.deleteWCallback.bind(this));
   }
@@ -112,17 +168,17 @@ export class TenFingers {
   deleteWCallback(chars, callback) {
     var i = 0,
       tInterval = window.setInterval(() => {
-        this.content.innerHTML = this.content.innerHTML.substr(0, this.content.innerHTML.length-1);
-
-        if (++i >= chars) {
+        if (i++ >= chars) {
           window.clearInterval(tInterval);
           callback();
+        } else {
+          this.content.innerHTML = this.content.innerHTML.substr(0, this.content.innerHTML.length-1);
         }
       }, this.deletingSpeed);
   }
 
   clear() {
-    this.addEvent(null, this.clearWCallback.bind(this));
+    return this.addEvent(null, this.clearWCallback.bind(this));
   }
 
   clearWCallback(x, callback) {
