@@ -8,7 +8,7 @@ class TypingEvent {
   }
 }
 
-export default class TenFingers {
+class TenFingers {
   constructor(target, args) {
     this.target = target;
     args = args || {};
@@ -222,4 +222,4 @@ export default class TenFingers {
       callback();
     }, t);
   }
-};
+}

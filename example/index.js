@@ -1,6 +1,3 @@
-// import TenFingers from 'https://cdn.jsdelivr.net/gh/MattMoony/10fingersJS/tenfingers/tenfingers.js';
-import TenFingers from '../src/tenfingers.js';
-
 // -- For performance measuring -- //
 let start;
 
