@@ -12,7 +12,7 @@ Provide strings and see them magically being typed out on the page. The typer wi
 #### Script tag
 
 ```html
-<script src='https://cdn.jsdelivr.net/gh/MattMoony/10fingersJS@v1.2/src/tenfingers.js'></script>
+<script src='https://cdn.jsdelivr.net/gh/MattMoony/10fingersJS@v1.1.2/src/tenfingers.js'></script>
 ```
 
 ## Setup
