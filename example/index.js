@@ -32,6 +32,7 @@ let target2 = document.getElementById('target2'),
     typer2 = new TenFingers(target2);
 
 typer2.typeAll([
+  '&#128519;',
   '!&copy; MattMoony',
   'Hello World!',
   'Hello Whales!',
@@ -55,6 +56,7 @@ let target3 = document.getElementById('target3'),
       typingSpeed: 250,
       deletingSpeed: 125,
       cursorSpeed: .25,
+      cursorChar: '$',
       pauseTimeout: 1000,
       // pauseTimeoutS: 1,
       endTimeout: 3000,

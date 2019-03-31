@@ -21,6 +21,8 @@ class TenFingers {
     this.endTimeout = args.endTimeout || 4000;
     this.endStringTimeout = args.endStringTimeout || 1250;
 
+    this.cursorChar = args.cursorChar || '|';
+
     this.loop = args.loop || true;
     this.eventQueueIndex = 0;
 
@@ -36,25 +38,24 @@ class TenFingers {
 
     let tags = `
       @keyframes tenfingersjs-animations-cursor {
-        from { background-color: #000; }
-        to { background-color: rgba(0,0,0,0); }
+        from { color: #000; }
+        to { color: rgba(0,0,0,0); }
       }
 
       .tenfingersjs-tags-target {
-        display: flex;
+        display: inline-block;
+        overflow-wrap: break-word;
       }
 
       .tenfingersjs-tags-cursor {
-        display: inline-block;
-        box-sizing: border-box;
-        width: 2px;
-        background-color: #3B3B3B;
-        border-radius: 2.5px;
+        color: #3B3B3B;
+        font-weight: bolder;
         animation: tenfingersjs-animations-cursor ${this.cursorSpeed}s linear 0s infinite alternate;
       }
 
       .tenfingersjs-tags-content {
-        vertical-algin: center;
+        display: inline;
+        vertical-align: middle;
         font-size: inherit;
         padding: 0;
         margin: 0;
@@ -69,9 +70,10 @@ class TenFingers {
 
     let cursor = document.createElement('span');
     cursor.classList.add('tenfingersjs-tags-cursor');
+    cursor.innerHTML = this.cursorChar;
     this.cursor = cursor;
 
-    let content = document.createElement('pre');
+    let content = document.createElement('span');
     content.classList.add('tenfingersjs-tags-content');
     this.content = content;
 
@@ -129,7 +131,7 @@ class TenFingers {
 
   typeWCallback(text, callback) {
     var i = 0,
-        p = /&\w+;/gm,
+        p = /(?:&\w+;|&#\d+;)/gm,
         t_parts = [],
         m;
 
