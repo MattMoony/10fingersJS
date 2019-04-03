@@ -23,7 +23,7 @@ class TenFingers {
 
     this.cursorChar = args.cursorChar || '|';
 
-    this.loop = args.loop || true;
+    this.loop = args.loop !== undefined ? args.loop : true;
     this.eventQueueIndex = 0;
 
     this.eventQueue = [new TypingEvent(this.endTimeout, this.pauseWCallback)];
